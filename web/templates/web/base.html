@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kartkhan</title>
+
+    <link rel="stylesheet" href="{% static 'web/css/vendor/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'web/css/vendor/materialdesignicons.css' %}">
+    <!-- plugin-------------------------------------->
+    <link rel="stylesheet" href="{% static 'web/css/vendor/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'web/js/sweetalert2/sweetalert2.css' %}">
+
+     {% block style %}
+    {% endblock %}
+</head>
+<body>
+  <div class="container-main">
+
+        {% block body %}
+        {% endblock %}
+
+
+   </div>
+</body>
+    <script src="{% static 'web/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'web/js/bootstrap.js' %}"></script>
+    <script src="{% static 'web/js/sweetalert2/sweetalert2.min.js' %}"></script>
+
+{% block js %}
+{% endblock %}
+</html>

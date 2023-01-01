@@ -1,0 +1,176 @@
+{% load static %}
+{% include 'web/base.html' %}
+{% block body %}
+    <!-- ////////////////////////////////////////////////////////////////////////////-->
+    <div class="wrapper"><!--Login Page Starts-->
+    <section id="login">
+    <div class="container-fluid">
+        <div class="row full-height-vh">
+            <div class="col-12 d-flex align-items-center justify-content-center gradient-aqua-marine">
+                <div class="card px-4 py-2 box-shadow-2 width-400">
+                    <div class="card-header text-center">
+                        <img src="{% static 'web/images/logo.jpg' %}" alt="company-logo" class="mb-3" width="120">
+                        <h4 class="text-uppercase text-bold-400 grey darken-1">ورود</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-block">
+
+
+                                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                                        <fieldset class="form-group">
+                                            <label for="codeMeli">کد ملی</label>
+                                            <input type="text" class="form-control" id="codeMeli" autocomplete="off">
+                                        </fieldset>
+                                    </div>
+
+                                <div class="col-xl-12 col-lg-12 col-md-12 mb-1">
+                                        <fieldset class="form-group">
+                                            <label for="disabledInput">رمز عبور</label>
+                                            <input type="password" class="form-control" id="password" >
+                                        </fieldset>
+                                    </div>
+
+                                {% comment %}<div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="custom-control custom-checkbox mb-2 mr-sm-2 mb-sm-0 ml-5">
+                                                <input type="checkbox" class="custom-control-input" checked id="rememberme">
+                                                <label class="custom-control-label float-left" for="rememberme">مرا به خاطر بسپار</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>{% endcomment %}
+
+                                <div class="form-group">
+                                    <div class="text-center col-md-12">
+                                        <button class="btn btn-danger px-4 py-2 text-uppercase white font-small-4 box-shadow-2 border-0" onclick="login()">ورود</button>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Login Page Ends-->
+    </div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+
+
+
+    function goRegisterPage(codeMeli) {
+        var url = '/registerPage'
+        var formData = new FormData();
+        formData.append('codeMeli', codeMeli);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                //'Content-type': 'application/json',
+                //'X-CSRFToken': csrftoken,
+            },
+            body: formData
+        }).then(function (response) {
+
+            });
+    }
+
+
+
+
+
+
+
+    function login() {
+
+        var codeMeli = document.getElementById("codeMeli").value;
+        var password = document.getElementById("password").value;
+
+        var formData = new FormData()
+
+        if(codeMeli === "" || password === ""){
+            Swal.fire({
+              icon: 'error',
+              title: 'خطا',
+              text: 'نام کاربری و یا رمز عبور خالی است!',
+              footer: '<a href="">Why do I have this issue?</a>'
+            });
+            return;
+        }
+
+
+        swal.fire({
+                title: 'ورود کاربر',
+                text: "آیا میخواهید عملیات ورود انجام شود؟",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'بله انجام شود',
+                cancelButtonText: 'خیر'
+            }).then((result) => {
+                if (result.value) {
+
+                    formData.append('codeMeli', codeMeli)
+                    formData.append('password', password)
+
+
+                    $.ajax({
+                        url: `loginUser`,
+                        method: 'POST',
+                        headers: {
+                        //'Content-type': 'application/json',
+                        //'X-CSRFToken':csrftoken,
+                        },
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (data) {
+                            console.log(data)
+                            if (data['isSuccess'] === true) {
+                                swal.fire(
+                                    'موفق!',
+                                    data['message'],
+                                    'success'
+                                ).then(function (isConfirm) {
+                                    //location.reload();
+                                    //goRegisterPage(codeMeli)
+                                    location.replace(`/registerPage/${codeMeli}`);
+                                });
+
+
+                            }else if (data['isSuccess'] === 'repeatUser'){
+                                swal.fire(
+                                    'هشدار!',
+                                    data['message'],
+                                    'warning'
+                                ) ;
+                            }
+                            else {
+
+                                swal.fire(
+                                    'هشدار!',
+                                    data['message'],
+                                    'warning'
+                                ) ;
+
+                            }
+                        },
+                        error: function (request, status, error) {
+                            alert(request.responseText);
+                        }
+
+                    });
+
+                }
+            })
+
+
+    }
+    </script>
+{% endblock %}
